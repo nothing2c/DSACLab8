@@ -1,3 +1,8 @@
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+
 public class MatrixGraph extends AbstractGraph {
     //entries in matrix are 1.0 or 0.0
     //1.0 indicates an edge.
@@ -42,9 +47,29 @@ public class MatrixGraph extends AbstractGraph {
             matrix[edge.getDestination()][edge.getSource()] = 0;
         }
     }
-    
+
+    private enum VertexStates {NOT_VISITED, VISITED, WAITING}
+
     public void breadthFirstTraversal(int start){
-	//Output the vertices in breadth first order
+        Deque<Integer> que = new LinkedList();
+        que.addLast(start);
+        VertexStates[] vertices = new VertexStates[getNumVertices()];
+
+        while(!que.isEmpty())
+        {
+            int vertex = que.removeFirst();
+            System.out.println(vertex);
+            vertices[vertex] = VertexStates.VISITED;
+
+            for(int col = 0; col < matrix[0].length; col++)
+            {
+                if(isEdge(vertex, col) && !((vertices[col] == VertexStates.VISITED) || (vertices[col] == VertexStates.WAITING)))
+                {
+                    que.addLast(col);
+                    vertices[col] = VertexStates.WAITING;
+                }
+            }
+        }
     }
     
     public void depthFirstTraversal(int start){
